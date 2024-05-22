@@ -25,11 +25,12 @@ class AppStateNotifier extends ChangeNotifier {
   bool showSplashImage = true;
   String? _redirectLocation;
 
-  /// Determines whether the app will refresh and build again when a sign
-  /// in or sign out happens. This is useful when the app is launched or
-  /// on an unexpected logout. However, this must be turned off when we
-  /// intend to sign in/out and then navigate or perform any actions after.
-  /// Otherwise, this will trigger a refresh and interrupt the action(s).
+  /// Determina se o aplicativo irá atualizar e reconstruir novamente quando
+  /// um login ou logout ocorrer. Isso é útil quando o aplicativo é iniciado
+  /// ou em um logout inesperado. No entanto, isso deve ser desativado quando
+  /// pretendemos fazer login/logout e, em seguida, navegar ou realizar
+  /// quaisquer ações depois. Caso contrário, isso acionará uma atualização e
+  /// interromperá a(s) ação(ões).
   bool notifyOnAuthChange = true;
 
   bool get loading => user == null || showSplashImage;
@@ -42,8 +43,8 @@ class AppStateNotifier extends ChangeNotifier {
   void setRedirectLocationIfUnset(String loc) => _redirectLocation ??= loc;
   void clearRedirectLocation() => _redirectLocation = null;
 
-  /// Mark as not needing to notify on a sign in / out when we intend
-  /// to perform subsequent actions (such as navigation) afterwards.
+  /// Marca como não precisando notificar em um login/logout quando pretendemos
+  /// realizar ações subsequentes (como navegação) posteriormente.
   void updateNotifyOnAuthChange(bool notify) => notifyOnAuthChange = notify;
 
   void update(BaseAuthUser newUser) {
@@ -51,13 +52,13 @@ class AppStateNotifier extends ChangeNotifier {
         user?.uid == null || newUser.uid == null || user?.uid != newUser.uid;
     initialUser ??= newUser;
     user = newUser;
-    // Refresh the app on auth change unless explicitly marked otherwise.
-    // No need to update unless the user has changed.
+    // Atualiza o aplicativo na mudança de autenticação a menos que explicitamente marcado de outra forma.
+    // Não há necessidade de atualizar a menos que o usuário tenha mudado.
     if (notifyOnAuthChange && shouldUpdate) {
       notifyListeners();
     }
-    // Once again mark the notifier as needing to update on auth change
-    // (in order to catch sign in / out events).
+    /// Mais uma vez marca o notifier como precisando atualizar na mudança de autenticação
+    /// (para capturar eventos de login/logout).
     updateNotifyOnAuthChange(true);
   }
 
@@ -137,8 +138,7 @@ extension NavigationExtensions on BuildContext {
             );
 
   void safePop() {
-    // If there is only one route on the stack, navigate to the initial
-    // page instead of popping.
+    /// Se houver apenas uma rota na pilha, navegue para a página inicial em vez de retornar.
     if (canPop()) {
       pop();
     } else {
@@ -180,8 +180,9 @@ class FFParameters {
 
   Map<String, dynamic> futureParamValues = {};
 
-  // Parameters are empty if the params map is empty or if the only parameter
-  // present is the special extra parameter reserved for the transition info.
+  /// Os parâmetros estão vazios se o mapa de parâmetros estiver vazio ou se o único
+  /// parâmetro presente for o parâmetro especial extra reservado para as informações
+  /// de transição.
   bool get isEmpty =>
       state.allParams.isEmpty ||
       (state.allParams.length == 1 &&
@@ -216,11 +217,11 @@ class FFParameters {
       return null;
     }
     final param = state.allParams[paramName];
-    // Got parameter from `extras`, so just directly return it.
+    /// Parâmetro obtido de `extras`, então apenas retorne diretamente.
     if (param is! String) {
       return param;
     }
-    // Return serialized value.
+    // Retorne o valor serializado.
     return deserializeParam<T>(
       param,
       type,
@@ -269,92 +270,4 @@ class FFRoute {
           final page = ffParams.hasFutures
               ? FutureBuilder(
                   future: ffParams.completeFutures(),
-                  builder: (context, _) => builder(context, ffParams),
-                )
-              : builder(context, ffParams);
-          final child = appStateNotifier.loading
-              ? Center(
-                  child: SizedBox(
-                    width: 50.0,
-                    height: 50.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        FlutterFlowTheme.of(context).primary,
-                      ),
-                    ),
-                  ),
-                )
-              : page;
-
-          final transitionInfo = state.transitionInfo;
-          return transitionInfo.hasTransition
-              ? CustomTransitionPage(
-                  key: state.pageKey,
-                  child: child,
-                  transitionDuration: transitionInfo.duration,
-                  transitionsBuilder:
-                      (context, animation, secondaryAnimation, child) =>
-                          PageTransition(
-                    type: transitionInfo.transitionType,
-                    duration: transitionInfo.duration,
-                    reverseDuration: transitionInfo.duration,
-                    alignment: transitionInfo.alignment,
-                    child: child,
-                  ).buildTransitions(
-                    context,
-                    animation,
-                    secondaryAnimation,
-                    child,
-                  ),
-                )
-              : MaterialPage(key: state.pageKey, child: child);
-        },
-        routes: routes,
-      );
-}
-
-class TransitionInfo {
-  const TransitionInfo({
-    required this.hasTransition,
-    this.transitionType = PageTransitionType.fade,
-    this.duration = const Duration(milliseconds: 300),
-    this.alignment,
-  });
-
-  final bool hasTransition;
-  final PageTransitionType transitionType;
-  final Duration duration;
-  final Alignment? alignment;
-
-  static TransitionInfo appDefault() => const TransitionInfo(hasTransition: false);
-}
-
-class RootPageContext {
-  const RootPageContext(this.isRootPage, [this.errorRoute]);
-  final bool isRootPage;
-  final String? errorRoute;
-
-  static bool isInactiveRootPage(BuildContext context) {
-    final rootPageContext = context.read<RootPageContext?>();
-    final isRootPage = rootPageContext?.isRootPage ?? false;
-    final location = GoRouterState.of(context).uri.toString();
-    return isRootPage &&
-        location != '/' &&
-        location != rootPageContext?.errorRoute;
-  }
-
-  static Widget wrap(Widget child, {String? errorRoute}) => Provider.value(
-        value: RootPageContext(true, errorRoute),
-        child: child,
-      );
-}
-
-extension GoRouterLocationExtension on GoRouter {
-  String getCurrentLocation() {
-    final RouteMatch lastMatch = routerDelegate.currentConfiguration.last;
-    final RouteMatchList matchList = lastMatch is ImperativeRouteMatch
-        ? lastMatch.matches
-        : routerDelegate.currentConfiguration;
-    return matchList.uri.toString();
-  }
-}
+                  builder: (context, _) =>
