@@ -30,7 +30,7 @@ A aplicação se comunica com o banco de dados Firebase, onde é feita a autenti
 Para configurar e executar este projeto localmente, siga estas etapas:
 
 ### 1. Clone o repositório:
-git clone https://github.com/marcosnonaka/appSifat.git
+git clone https://github.com/nonakamarcosrc/app-sifat.git
 
 ### 2. Navegue até o diretório do projeto:
 cd nomedoseurepositorio
