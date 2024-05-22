@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "593606735456",
+    "project_id": "app-sifat-aamfqv",
+    "storage_bucket": "app-sifat-aamfqv.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:593606735456:android:782408c974a9b841c2f505",
+        "android_client_info": {
+          "package_name": "com.nkapps.appsifat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKGQC1T_zTpbVBJ5PF0VWvHxeTdUjL71M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
