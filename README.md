@@ -9,10 +9,8 @@ Este projeto é uma aplicação de interface de usuário simples com os seguinte
 # Funcionalidades
 ### 1. Tela de Login
 - Campos de E-mail e Senha: Os usuários podem inserir seu e-mail e senha.
-- Validação: 
-  Os campos de email e senha são validados.
-- Botão de Login:  
-  Exibe uma mensagem de erro se as credenciais forem inválidas, redireciona para a Tela Inicial após um login bem-sucedido.
+- Validação: Os campos de email e senha são validados.
+- Botão de Login: Exibe uma mensagem de erro se as credenciais forem inválidas, redireciona para a Tela Inicial após um login bem-sucedido.
   
 ### 2. Tela Inicial
 - AppBar:
@@ -24,6 +22,9 @@ Busca dados de uma API pública, e exibe em uma lista de usuários, com um campo
 Conexão com uma API de Teste: Usa uma API pública (JSONPlaceholder).
 - Busca de Dados:
 Recupera uma lista de objetos e Exibe os dados na Tela Inicial.
+
+### 4. Backend Firebase
+A aplicação se comunica com o banco de dados Firebase, onde é feita a autenticação e cadastro de novos usuários. O cadastro é feito na tela de login.
 
 # Instalação
 Para configurar e executar este projeto localmente, siga estas etapas:
